@@ -75,6 +75,14 @@ namespace Assignment_2
             int[] nums3 = { 9, 9, 8, 8 };
             Console.WriteLine("Largest Integer is " + LargestUniqueNumber(nums3));
 
+            int[] nums4 = { 5, 7, 3, 9, 4, 9, 8, 3, 1 };
+            Console.WriteLine("Largest Integer is " + LargestUniqueNumber(nums4));
+
+            string keyboard = "pqrstuvwxyzabcdefghijklmno";
+            string word = "leetcode";
+
+            Console.WriteLine("Time to type " + word + " using keyboard '" + keyboard + "' is " + CalculateTime(keyboard, word));
+
             // Keep the console window open in debug mode.      
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
@@ -172,12 +180,7 @@ namespace Assignment_2
                         listTwo.Remove(num);
                     }
                 }
-
-                Console.WriteLine("Intersection List:");
-                foreach (int num in listIntersection)
-                    Console.Write(num + " ");
-                Console.WriteLine();
-
+                // convert list to array and return
                 return listIntersection.ToArray();
             }
             catch
@@ -221,13 +224,52 @@ namespace Assignment_2
                     if (item.Key > largestInt && item.Value == 1)
                         largestInt = item.Key;
                 }
-
+                // return (it will return -1 if no matches were found in the dictionary
                 return largestInt;
             }
             catch
             {
                 Console.WriteLine("Exception occured while computing LargestUniqueNumber()");
-                // some error occurred - return empty int array
+                // some error occurred, return -1
+                return -1;
+            }
+        }
+
+        public static int CalculateTime(string keyboard, string word)
+        {
+            try
+            {
+                // first, we convert the keyboard string to array of chars
+                char[] keyboardChars = keyboard.ToCharArray();
+                // let's convert keyboard string to the Dictionary where key is Char and Value is Integer
+                // we need to initialize and populate this dictionary
+                Dictionary<char, int> keyboardDictionary = new Dictionary<char, int>();
+                for (int i = 0; i < keyboardChars.Length; i++ )
+                    keyboardDictionary.Add(keyboardChars[i], i);
+                // now, when we have keyboard as dictionary we can calculate time to type a given word string (initially = 0)
+                // key will be used to find any Character and its value will indicate its position on the keyboard
+                int typingTime = 0;
+                // we also initialize the index where typing starts (start at 0 and then update as each char is typed)
+                int index = 0;
+                // we need to convert string word to array of chars first
+                char[] wordChars = word.ToCharArray();
+                // now loop through the characters in the provided word and calculate time
+                for (int i = 0; i < wordChars.Length; i++ )
+                {
+                    // simply increment the typing time by absolute value of difference between previous char index and current char index
+                    // note: wordChars[i] returns the character found at i while keyboardDictionary[wordChars[i]] returns its index on the keyboard
+                    typingTime += Math.Abs(index - keyboardDictionary[wordChars[i]]);
+
+                    // update the index, it will be used as a previous char index during next loop iteration
+                    index = keyboardDictionary[wordChars[i]];
+                }
+                // return the typing time we calculated
+                return typingTime;
+            }
+            catch
+            {
+                Console.WriteLine("Exception occured while computing CalculateTime()");
+                // some error occurred - return negative one
                 return -1;
             }
         }
