@@ -83,6 +83,49 @@ namespace Assignment_2
 
             Console.WriteLine("Time to type " + word + " using keyboard '" + keyboard + "' is " + CalculateTime(keyboard, word));
 
+            int[,] image1 = { { 1, 1, 0 }, { 1, 0, 1 }, { 0, 0, 0 } };
+            int[,] image2 = { { 1, 1, 0, 0 }, { 1, 0, 0, 1 }, { 0, 1, 1, 1 }, { 1, 0, 1, 0 } };
+
+            Console.WriteLine("Original Image1:");
+            for (int i = 0; i < image1.GetLength(0); i++)
+            {
+                for (int j = 0; j < image1.GetLength(1); j++)
+                {
+                    Console.Write(image1[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("Flipped and Inverted Image1:");
+            image1 = FlipAndInvertImage(image1);
+            for (int i = 0; i < image1.GetLength(0); i++)
+            {
+                for (int j = 0; j < image1.GetLength(1); j++)
+                {
+                    Console.Write(image1[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Original Image2:");
+            for (int i = 0; i < image2.GetLength(0); i++ )
+            {
+                for (int j = 0; j < image2.GetLength(1); j++ )
+                {
+                    Console.Write(image2[i,j] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("Flipped and Inverted Image2:");
+            image2 = FlipAndInvertImage(image2);
+            for (int i = 0; i < image2.GetLength(0); i++)
+            {
+                for (int j = 0; j < image2.GetLength(1); j++)
+                {
+                    Console.Write(image2[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+
             // Keep the console window open in debug mode.      
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
@@ -271,6 +314,51 @@ namespace Assignment_2
                 Console.WriteLine("Exception occured while computing CalculateTime()");
                 // some error occurred - return negative one
                 return -1;
+            }
+        }
+
+        public static int[,] FlipAndInvertImage(int[,] A)
+        {
+            try
+            {
+                // here, we need to iterate through the 2D array. We will use GetLength() method to get the dimensions of 2D array
+                // GetLength(0) returns the number of "rows" while GetLength(1) returns the number of "columns"
+
+                // initialize new image 2D array which will be returned after original is flipped and inverted
+                int[,] newImage = new int[A.GetLength(0), A.GetLength(1)];
+                
+                // first, we need to flip each row
+                // outer loop iterates through rows, while inner loop iterates through columns
+                for ( int i = 0; i < A.GetLength(0); i++ )
+                {
+                    // flip here (aka reverse each row)
+                    // iterate the original row and populate newImage array (backwards)
+                    for (int j = 0; j < A.GetLength(1); j++)
+                        newImage[i,A.GetLength(1)-1-j] = A[i, j];
+                }
+
+                // now go ahead and reverse the image, 
+                // iterate through the flipped image (aka new image)
+                for ( int i = 0; i < newImage.GetLength(0); i++ )
+                {
+                    for ( int j = 0; j < newImage.GetLength(1); j++ )
+                    {
+                        // reverse simply change 1 to 0 or 0 to 1
+                        if (newImage[i, j] == 0)
+                            newImage[i, j] = 1;
+                        else
+                            newImage[i, j] = 0;
+                    }
+                }
+                    
+                // return new image 2D array
+                return newImage;
+            }
+            catch
+            {
+                Console.WriteLine("Exception occured while computing FlipAndInvertImage()");
+                // some error occured, return the input array
+                return A;
             }
         }
     }
