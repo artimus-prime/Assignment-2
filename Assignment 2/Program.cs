@@ -125,6 +125,25 @@ namespace Assignment_2
                 }
                 Console.WriteLine();
             }
+            int[,] intervals = { { 0, 30 }, { 5, 10 }, { 15, 20 } };
+            int minMeetingRooms = MinMeetingRooms(intervals);
+            Console.WriteLine("Minimum meeting rooms needed = {0}\n", minMeetingRooms);
+
+            int[] arr = { -4, -1, 0, 3, 10 };
+            int[] sortedSquares = SortedSquares(arr);
+            Console.WriteLine("Squares of the array in sorted order is:");
+            DisplayArray(sortedSquares);
+            Console.Write("\n");
+
+            string s = "abca";
+            if (ValidPalindrome(s))
+            {
+                Console.WriteLine("The given string \"{0}\" can be made PALINDROME", s);
+            }
+            else
+            {
+                Console.WriteLine("The given string \"{0}\" CANNOT be made PALINDROME", s);
+            }
 
             // Keep the console window open in debug mode.      
             Console.WriteLine("Press any key to exit.");
@@ -360,6 +379,155 @@ namespace Assignment_2
                 // some error occured, return the input array
                 return A;
             }
+        }
+        public static int MinMeetingRooms(int[,] interval)
+        {
+
+            // for calculating the min rooms required we need to split the start times and end times of every meeting
+            // and then we need to sort them so that we can compare the overlapping start times and end times and calculate
+            // rooms accordingly.
+            List<int> start_time = new List<int>();
+            List<int> end_time = new List<int>();
+            for (int k = 0; k < interval.GetLength(0); k++)
+            {
+                start_time.Add(interval[k, 0]);
+            }
+            for (int k = 0; k < interval.GetLength(0); k++)
+            {
+                end_time.Add(interval[k, 1]);
+            }
+            start_time.Sort();
+            end_time.Sort();
+            int i = 0, j = 0, rooms = 0;
+
+            while (i < interval.GetLength(0))
+            {
+                // logic here is if the start time of the next meeting is less than that of the end time of the new meeting, 
+                // then we increment the count of new rooms by variable i. Through i we keep track of number of meetings occured in new room.
+                if (start_time[i] < end_time[j])
+                {
+                    i++;
+                }
+                // also we check if the start_time of the current meeting is greater than the end time of the previous old meeting, 
+                // then we can use the old meeting room its self for the current meeting. Through j we keep track of number of meetings occured in old rooms( reused meeting rooms)
+                else if (start_time[i] > end_time[j])
+                {
+                    j++;
+                }
+                // if all the meetings have same start time and end time we need different rooms for every meeting. so only i is incremented 
+                // showing that we need new meeting room for all meetings
+                else
+                {
+                    i++;
+                    j++;
+                }
+                // Now we can calculate the difference number of meeting occured in new room(i) and number of meetings occured in old(reused) rooms j.
+                // This gives us number of rooms required.
+                rooms = Math.Max(rooms, i - j);
+            }
+            // finally return the minimum number of rooms required.
+            return rooms;
+        }
+        public static int[] SortedSquares(int[] a)
+        {
+            int p;
+            //Getting the count of negative numbers in variable p
+            for (p = 0; p < a.Length; p++)
+            {
+                if (a[p] >= 0)
+                {
+                    break;
+                }
+            }
+
+
+            int i = p - 1; // reading the negative numbers in reverse order starting from p-1
+            int j = p; // reading the positive numbers from p
+            // initializing a llist to store temporary squares of numbers
+            List<int> temp = new List<int>();
+            // this while loop will iterate the negative numbers starting from p-1 to 0 and positive numbers starting from p to a.length 
+            while (i >= 0 && j < a.Length)
+            {
+                // if square of first negative number at p-1 is < square of first positive number at p then square of first positive number
+                // should be the first element of temporary list. Then we will go to next negative element by decreasing the i value to i--.
+                // then in the next iteration the square of second negative value at p-2 is compared to square of first positive number.
+                // if the square of second negative values is greater than square of first positive number then it will go to else condition and then 
+                // adds the first positive number to the temporary list. Then it increments the positive value to p+1. i.e j++.
+                // This cycle continues until i becomes less than zero or j becomes greater than or equal to the length of the list.
+                // once either of the above condition meets the loop will break.
+                if (a[i] * a[i] < a[j] * a[j])
+                {
+                    temp.Add(a[i] * a[i]);
+                    i--;
+
+                }
+                else
+                {
+                    temp.Add(a[j] * a[j]);
+                    j++;
+
+                }
+
+
+            }
+            // after the above loop breaks this while loop will add the remaining squares of negative numbers to the list
+            while (i >= 0)
+            {
+                temp.Add(a[i] * a[i]);
+                i--;
+            }
+            // after the above loop breaks this while loop will add the remaining squares of positive numbers to the list
+            while (j < a.Length)
+            {
+                temp.Add(a[j] * a[j]);
+                j++;
+            }
+            // now we will replace every element of initial array with the element from temporary list which has squares of numbers
+            for (int m = 0; m < temp.Count; m++)
+            {
+                a[m] = temp[m];
+            }
+            // finally we will return the array which has squares of numbers in sorted order.
+            return a;
+        }
+        public static void DisplayArray(int[] i)
+        {
+            for(int j=0;j<i.Length; j++)
+            {
+                Console.WriteLine(i[j]);
+            }
+        }
+        public static bool ValidPalindrome(string s)
+        {
+
+            int i = 0;
+            // Loop through the entire string length
+            while (i < s.Length)
+            {
+                // first convert the string to char list
+                List<char> p = new List<char>(s);
+                // then we will remove the every char at each elemnt of string by iterating through loop
+                p.RemoveAt(i);
+                // once the char is removed convert the previous char list to new char list
+                List<char> temp_char = new List<char>(p);
+                // now convert the char list with removed char to string
+                string temp = string.Join("", temp_char.ToArray());
+                // reverse the char list
+                temp_char.Reverse();
+                // then convert the reversed char list to string
+                string temp_rev = string.Join("", temp_char.ToArray());
+                // if reversed string is equal to unreversed string then palindrome is valid hence return true
+                if (temp_rev == temp)
+                {
+                    return true;
+
+
+                }
+                // remove each character and check for paliindrome until its found by looping through the end of the string.
+                i++;
+
+            }
+            return false;
         }
     }
 }
