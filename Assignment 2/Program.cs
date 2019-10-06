@@ -414,13 +414,6 @@ namespace Assignment_2
                 {
                     j++;
                 }
-                // if all the meetings have same start time and end time we need different rooms for every meeting. so only i is incremented 
-                // showing that we need new meeting room for all meetings
-                else
-                {
-                    i++;
-                    j++;
-                }
                 // Now we can calculate the difference number of meeting occured in new room(i) and number of meetings occured in old(reused) rooms j.
                 // This gives us number of rooms required.
                 rooms = Math.Max(rooms, i - j);
